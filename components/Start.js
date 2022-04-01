@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, ImageBackground, Stylesheet, Pressable, TouchableOpacity, } from 'react-native';
+import { View, Text, TextInput, ImageBackground, Pressable, TouchableOpacity, Image, } from 'react-native';
 import BackgroundImage from '../assets/background-image.png';
+import icon from '../assets/icon.png';
 
 export default class Start extends React.Component {
 
@@ -36,27 +37,28 @@ export default class Start extends React.Component {
           style={styles.backgroundImage}
         >
           <View style={styles.titleBox}>
-            <Text style={styles.title}>Safe Chats</Text>
+            <Text style={styles.title}>ChatApp</Text>
           </View>
 
           <View style={styles.box1}>
             <View style={styles.inputBox}>
+              <Image source={icon} />
               <TextInput
                 style={styles.input}
                 onChangeText={(text) => this.setState({ name: text })}
                 value={this.state.name}
-                placeholder='What is your name?'
+                placeholder='Type your name here'
               />
             </View>
 
             <View style={styles.colorBox}>
               <Text style={styles.chooseColor}>
                 {" "}
-                Pick your background color!{" "}
+                Choose your background color!{" "}
               </Text>
             </View>
 
-            {/* All the colors to change the background are here! */}
+            {/* Background colors live here */}
             <View style={styles.colorArray}>
               <TouchableOpacity
                 accessible={true}
@@ -201,35 +203,35 @@ const styles = StyleSheet.create({
   },
 
   color1: {
-    backgroundColor: '#890000',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-
-  color2: {
-    backgroundColor: '#1DA01B',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-
-  color3: {
     backgroundColor: '#9D7F15',
     width: 50,
     height: 50,
     borderRadius: 25,
   },
 
-  color4: {
+  color2: {
+    backgroundColor: '1B70A0',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+
+  color3: {
     backgroundColor: '#931560',
     width: 50,
     height: 50,
     borderRadius: 25,
   },
 
+  color4: {
+    backgroundColor: '#090C08',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+
   color5: {
-    backgroundColor: '#1B70A0',
+    backgroundColor: '#B9C6AE',
     width: 50,
     height: 50,
     borderRadius: 25,

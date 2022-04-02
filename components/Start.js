@@ -1,5 +1,14 @@
 import React from 'react';
-import { View, Text, TextInput, ImageBackground, Pressable, TouchableOpacity, Image, } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  ImageBackground,
+  Pressable,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from 'react-native';
 import BackgroundImage from '../assets/background-image.png';
 import icon from '../assets/icon.png';
 
@@ -10,7 +19,7 @@ export default class Start extends React.Component {
 
     this.state = {
       name: '',
-      bgColor: this.colors.blue
+      bgColor: this.colors.blue,
     };
   }
 
@@ -63,7 +72,7 @@ export default class Start extends React.Component {
               <TouchableOpacity
                 accessible={true}
                 accessibilityLabel='gold background'
-                accessibilityHint='Allows you to add a red background to the chat'
+                accessibilityHint='Allows you to add a gold background to the chat'
                 accessibilityRole='button'
                 style={styles.color1}
                 onPress={() => this.changeBgColor(this.colors.gold)}
@@ -71,7 +80,7 @@ export default class Start extends React.Component {
               <TouchableOpacity
                 accessible={true}
                 accessibilityLabel='blue background'
-                accessibilityHint='Allows you to add a green background to the chat'
+                accessibilityHint='Allows you to add a blue background to the chat'
                 accessibilityRole='button'
                 style={styles.color2}
                 onPress={() => this.changeBgColor(this.colors.green)}
@@ -79,7 +88,7 @@ export default class Start extends React.Component {
               <TouchableOpacity
                 accessible={true}
                 accessibilityLabel='pink background'
-                accessibilityHint='Allows you to add a gold background to the chat'
+                accessibilityHint='Allows you to add a pink background to the chat'
                 accessibilityRole='button'
                 style={styles.color3}
                 onPress={() => this.changeBgColor(this.colors.gold)}
@@ -87,7 +96,7 @@ export default class Start extends React.Component {
               <TouchableOpacity
                 accessible={true}
                 accessibilityLabel='dark background'
-                accessibilityHint='Allows you to add a pink background to the chat'
+                accessibilityHint='Allows you to add a dark background to the chat'
                 accessibilityRole='button'
                 style={styles.color4}
                 onPress={() => this.changeBgColor(this.colors.dark)}
@@ -95,7 +104,7 @@ export default class Start extends React.Component {
               <TouchableOpacity
                 accessible={true}
                 accessibilityLabel='green background'
-                accessibilityHint='Allows you to add a blue background to the chat'
+                accessibilityHint='Allows you to add a green background to the chat'
                 accessibilityRole='button'
                 style={styles.color5}
                 onPress={() => this.changeBgColor(this.colors.green)}
@@ -210,7 +219,7 @@ const styles = StyleSheet.create({
   },
 
   color2: {
-    backgroundColor: '1B70A0',
+    backgroundColor: '#1B70A0',
     width: 50,
     height: 50,
     borderRadius: 25,

@@ -34,7 +34,7 @@ export default class Start extends React.Component {
     blue: '#1B70A0',
     pink: '#931560',
     dark: '#090C08',
-    green: '#B9C6AE',
+    green: '#8fce00',
   };
 
   render() {
@@ -83,7 +83,7 @@ export default class Start extends React.Component {
                 accessibilityHint='Allows you to add a blue background to the chat'
                 accessibilityRole='button'
                 style={styles.color2}
-                onPress={() => this.changeBgColor(this.colors.green)}
+                onPress={() => this.changeBgColor(this.colors.blue)}
               ></TouchableOpacity>
               <TouchableOpacity
                 accessible={true}
@@ -91,7 +91,7 @@ export default class Start extends React.Component {
                 accessibilityHint='Allows you to add a pink background to the chat'
                 accessibilityRole='button'
                 style={styles.color3}
-                onPress={() => this.changeBgColor(this.colors.gold)}
+                onPress={() => this.changeBgColor(this.colors.pink)}
               ></TouchableOpacity>
               <TouchableOpacity
                 accessible={true}
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
 
   input: {
     fontSize: 16,
-    fontWeight: '300',
+    fontWeight: '800',
     color: '#757083',
     opacity: 0.5,
   },
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   },
 
   color5: {
-    backgroundColor: '#B9C6AE',
+    backgroundColor: '#8fce00',
     width: 50,
     height: 50,
     borderRadius: 25,

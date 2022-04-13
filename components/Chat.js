@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, Platform, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 export default class Chat extends React.Component {
@@ -27,6 +27,7 @@ export default class Chat extends React.Component {
     }
   }
 
+  //add static messages to messages state
   componentDidMount() {
     let name = this.props.route.params.name;
     this.props.navigation.setOptions({ title: name });
@@ -44,14 +45,19 @@ export default class Chat extends React.Component {
       <Bubble
         {...props}
         wrapperStyle={{
-          right: {
+          left: {
             backgroundColor: 'white'
+          },
+          right: {
+            backgroundColor: 'gray'
           }
         }}
       />
     )
   }
 
+  //rendering GiftedChat in the view and making sure input field is not covered by the Android
+  //keyboard
   render() {
     let { bgColor } = this.props.route.params;
 
@@ -75,5 +81,20 @@ export default class Chat extends React.Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  giftedChat: {
+    flex: 1,
+    width: "100%",
+    paddingBottom: 10,
+    justifyContent: "center",
+    borderRadius: 5,
+  },
+});
 
 

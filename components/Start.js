@@ -51,7 +51,6 @@ export default class Start extends React.Component {
 
           <View style={styles.box1}>
             <View style={styles.inputBox}>
-              <Image source={icon} />
               <TextInput
                 style={styles.input}
                 onChangeText={(text) => this.setState({ name: text })}

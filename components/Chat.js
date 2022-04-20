@@ -1,19 +1,9 @@
 import React from 'react';
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
-import firebase from 'firebase';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBHZgf5kDld1Iab-wH2jxGJNfT7bvxzuoQ",
-  authDomain: "meet-app-332600.firebaseapp.com",
-  projectId: "meet-app-332600",
-  storageBucket: "meet-app-332600.appspot.com",
-  messagingSenderId: "959923794146",
-  appId: "1:959923794146:web:bebbdc9587b2f8887f6ebb",
-  measurementId: "G-2N0T0MSKEJ"
-}
 
 export default class Chat extends React.Component {
   constructor() {
@@ -30,27 +20,23 @@ export default class Chat extends React.Component {
       location: null,
     };
 
+    //configuration code for database
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHZgf5kDld1Iab-wH2jxGJNfT7bvxzuoQ",
+      authDomain: "meet-app-332600.firebaseapp.com",
+      projectId: "meet-app-332600",
+      storageBucket: "meet-app-332600.appspot.com",
+      messagingSenderId: "959923794146",
+      appId: "1:959923794146:web:bebbdc9587b2f8887f6ebb",
+      measurementId: "G-2N0T0MSKEJ"
+    }
+
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
 
     this.referenceChatmessages = firebase.firestore().collection('messages');
   }
-
-  onCollectionUpdate = (querySnapshot) => {
-    const messages = [];
-    // go through each document
-    querySnapshot.forEach((doc) => {
-      //get the QueryDocumentSnapshot's data
-      let data = doc.data();
-      messages.push({
-        _id: data._id,
-        text: data.text,
-        createdAt: data.createdAt.toDate(),
-        user: data.user,
-      });
-    });
-  };
 
   //add static messages to messages state
   componentDidMount() {
@@ -69,6 +55,21 @@ export default class Chat extends React.Component {
         .onSnapshot(this.onCollectionUpdate);
     });
   }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const messages = [];
+    // go through each document
+    querySnapshot.forEach((doc) => {
+      //get the QueryDocumentSnapshot's data
+      let data = doc.data();
+      messages.push({
+        _id: data._id,
+        text: data.text,
+        createdAt: data.createdAt.toDate(),
+        user: data.user,
+      });
+    });
+  };
 
   //function to stop listening for authentication and changes
   componentWillUnmount() {

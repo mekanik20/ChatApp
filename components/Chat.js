@@ -1,9 +1,23 @@
 import React from 'react';
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
-import * as firebase from 'firebase';
+import firebase from 'firebase';
 import 'firebase/firestore';
+//import { initializeApp } from 'firebase/app';
+//import { getAuth } from 'firebase/auth';
+//import { getFirestore } from 'firebase/firestore';
+//import { getStorage } from 'firebase/storage';
 
+//configuration code for database
+const firebaseConfig = {
+  apiKey: "AIzaSyBHZgf5kDld1Iab-wH2jxGJNfT7bvxzuoQ",
+  authDomain: "meet-app-332600.firebaseapp.com",
+  projectId: "meet-app-332600",
+  storageBucket: "meet-app-332600.appspot.com",
+  messagingSenderId: "959923794146",
+  appId: "1:959923794146:web:bebbdc9587b2f8887f6ebb",
+  //measurementId: "G-2N0T0MSKEJ"
+}
 
 export default class Chat extends React.Component {
   constructor() {
@@ -20,22 +34,66 @@ export default class Chat extends React.Component {
       location: null,
     };
 
-    //configuration code for database
-    const firebaseConfig = {
-      apiKey: "AIzaSyBHZgf5kDld1Iab-wH2jxGJNfT7bvxzuoQ",
-      authDomain: "meet-app-332600.firebaseapp.com",
-      projectId: "meet-app-332600",
-      storageBucket: "meet-app-332600.appspot.com",
-      messagingSenderId: "959923794146",
-      appId: "1:959923794146:web:bebbdc9587b2f8887f6ebb",
-      measurementId: "G-2N0T0MSKEJ"
-    }
-
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
+      const firestore = firebase.firestore();
+      firestore.settings({ ignoreUndefinedProperties: true });
     }
 
     this.referenceChatmessages = firebase.firestore().collection('messages');
+  }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const messages = [];
+    // go through each document
+    querySnapshot.forEach((doc) => {
+      //get the QueryDocumentSnapshot's data
+      let data = doc.data();
+      messages.push({
+        _id: data._id,
+        text: data.text,
+        createdAt: data.createdAt.toDate(),
+        user: data.user,
+      });
+    });
+    this.setState({
+      messages: messages,
+    });
+    this.saveMessages();
+  };
+
+  getMessages = async () => {
+    let messages = '';
+    try {
+      messages = (await AsyncStorage.getItem('messages')) || [];
+      this.setState({
+        messages: JSON.parse(messages),
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  async deleteMessages() {
+    try {
+      await AsyncStorage.removeItem('messages');
+      this.setState({
+        messages: [],
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async saveMessages() {
+    try {
+      await AsyncStorage.setItem(
+        'messages',
+        JSON.stringify(this.state.messages)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   //add static messages to messages state
@@ -55,21 +113,6 @@ export default class Chat extends React.Component {
         .onSnapshot(this.onCollectionUpdate);
     });
   }
-
-  onCollectionUpdate = (querySnapshot) => {
-    const messages = [];
-    // go through each document
-    querySnapshot.forEach((doc) => {
-      //get the QueryDocumentSnapshot's data
-      let data = doc.data();
-      messages.push({
-        _id: data._id,
-        text: data.text,
-        createdAt: data.createdAt.toDate(),
-        user: data.user,
-      });
-    });
-  };
 
   //function to stop listening for authentication and changes
   componentWillUnmount() {
@@ -95,7 +138,11 @@ export default class Chat extends React.Component {
     this.setState(
       (previousState) => ({
         messages: GiftedChat.append(previousState.messages, messages),
-      })
+      }),
+      () => {
+        this.addMessages();
+        this.saveMessages();
+      }
     );
   }
 

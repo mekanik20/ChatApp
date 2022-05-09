@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import firebase from 'firebase';
 import 'firebase/firestore';
-//import AsyncStorage from '@react-native-async-storage/async-storage';
-//import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from '@react-native-community/async-storage';
+import NetInfo from "@react-native-community/netinfo";
 //import { initializeApp } from 'firebase/app';
 //import { getAuth } from 'firebase/auth';
 //import { getFirestore } from 'firebase/firestore';
@@ -44,6 +44,7 @@ export default class Chat extends React.Component {
     }
 
     this.referenceChatmessages = firebase.firestore().collection('messages');
+    this.refMsgsUser = null;
   }
 
   /*retrieves the current data in 'messages' collection and stores it in the state
@@ -89,7 +90,7 @@ export default class Chat extends React.Component {
     }
   }
 
-  /*async saveMessages() {
+  async saveMessages() {
     try {
       await AsyncStorage.setItem(
         'messages',
@@ -98,64 +99,60 @@ export default class Chat extends React.Component {
     } catch (error) {
       console.log(error.message);
     }
-  }*/
+  }
 
   //add static messages to messages state
   componentDidMount() {
     let { name } = this.props.route.params;
     this.props.navigation.setOptions({ title: name });
-    this.referenceChatmessages = firebase.firestore().collection('messages');
+    //this.referenceChatmessages = firebase.firestore().collection('messages');
 
-    this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
-      if (!user) {
-        return await firebase.auth().signInAnonymously();
+    NetInfo.fetch().then((connection) => {
+      if (connection.isConnected) {
+        this.setState({ isConnected: true });
+        console.log('online');
+        this.unsubscribe = this.referenceChatmessages
+          .orderBy('createdAt', 'desc')
+          .onSnapshot(this.onCollectionUpdate);
+
+        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+          if (!user) {
+            return await firebase.auth().signInAnonymously();
+          }
+
+          this.setState({
+            uid: user.uid,
+            messages: [],
+            user: {
+              _id: user.uid,
+              name: name,
+              avatar: 'https://placeimg.com/140/140/any',
+            },
+          });
+
+          this.refMsgsUser = firebase
+            .firestore()
+            .collection('messages')
+            .where('uid', '==', this.state.uid);
+        });
+
+        this.saveMessages();
+      } else {
+        this.setState({ isConnected: false });
+        console.log('offline');
+        this.getMessages();
       }
-      this.setState({
-        uid: user.uid,
-        messages: [],
-        user: {
-          _id: user.uid,
-          name: name,
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      });
-
-      this.unsubscribe = this.referenceChatmessages
-        .orderBy('createdAt', 'desc')
-        .onSnapshot(this.onCollectionUpdate);
     });
   }
 
-  /*NetInfo.fetch().then((connection) => {
-    if (connection.isConnected) {
-      this.setState({ isConnected: true });
-      console.log('online');
-      this.unsubscribe = this.referenceChatmessages
-        .orderBy('createdAt', 'desc')
-        .onSnapshot(this.onCollectionUpdate);
-
-      
-        this.refMsgsUser = firebase
-          .firestore()
-          .collection('messages')
-          .where('uid', '==', this.state.uid);
-      });
-      this.saveMessages();
-    } else {
-      this.setState({ isConnected: false });
-      console.log('offline');
-      this.getMessages();
-    }
-  });*/
-
   //function to stop listening for authentication and changes
   componentWillUnmount() {
-    //if (this.state.isConnected) {
-    //stop listening to authentication
-    this.authUnsubscribe();
-    //stop listening for changes
-    this.unsubscribe();
-    //}
+    if (this.state.isConnected) {
+      //stop listening to authentication
+      this.authUnsubscribe();
+      //stop listening for changes
+      this.unsubscribe();
+    }
   }
 
   addMessages() {
@@ -177,9 +174,20 @@ export default class Chat extends React.Component {
       }),
       () => {
         this.addMessages();
-        //this.saveMessages();
+        this.saveMessages();
       }
     );
+  }
+
+  renderInputToolbar(props) {
+    if (this.state.isConnected == false) {
+    } else {
+      return (
+        <InputToolbar
+          {...props}
+        />
+      );
+    }
   }
 
   renderBubble(props) {

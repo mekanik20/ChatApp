@@ -35,7 +35,7 @@ export default class CustomActions extends React.Component {
   takePhoto = async () => {
     const { status } = await Permissions.askAsync(
       Permissions.CAMERA,
-      Permissions.CAMERA_ROLL
+      Permissions.MEDIA_LIBRARY
     );
     try {
       if (status === 'granted') {
